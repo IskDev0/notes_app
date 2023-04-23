@@ -69,8 +69,6 @@ let link = ref("")
 
 let description = ref("")
 
-let type = ref("")
-
 
 const wrongInput = async () => {
   const alert = await alertController.create({
@@ -95,8 +93,7 @@ const wrongWebsite = async () => {
 const addNote = async () => {
 
  try {
-  if (link.value.length > 0 && description.value.length > 0 && type.value.length > 0) {
-    if (link.value.match(/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/)) {
+  if (link.value.length > 0 && description.value.length > 0 && notesStore.type.length > 0) {
 
       const {data, error} = await supabase
           .from('notes')
@@ -105,15 +102,11 @@ const addNote = async () => {
               id: uuidv4(),
               note_link: link.value,
               note_desc: description.value,
-              note_type: type.value
+              note_type: notesStore.type
             },
           ])
 
       await router.replace("/")
-
-    }else {
-     await wrongWebsite()
-    }
   }else {
     await wrongInput()
   }
@@ -127,7 +120,7 @@ const addNote = async () => {
 }
 
 let handleEvent = ($event) => {
-  type.value = $event.detail.value
+  notesStore.type = $event.detail.value
 }
 
 </script>

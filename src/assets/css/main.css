@@ -1,0 +1,20 @@
+.full {
+    width: 100%;
+}
+
+.no-shadow {
+    box-shadow: none;
+}
+.flex {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.rounded {
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+.white {
+    color: #eee;
+}

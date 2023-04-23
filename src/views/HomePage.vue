@@ -2,13 +2,15 @@
   <IonPage>
     <IonHeader>
       <IonToolbar>
-        <!--        <img width="150" src="../../logo.svg"/>-->
+        <IonTitle class="ion-text-center ion-align-items-center">
+            Notes
+        </IonTitle>
       </IonToolbar>
     </IonHeader>
-    <IonContent class="">
+    <IonContent>
       <IonItem class="ion-margin">
 
-        <IonSearchbar/>
+        <IonSearchbar @ionInput="searchByName" v-model="search" />
 
         <IonList>
           <IonItem>
@@ -18,8 +20,11 @@
           </IonItem>
         </IonList>
       </IonItem>
-      <NoteCard :note="note" v-for="note in sortedList" :key="note.id"/>
+      <NoteCard :note="note" v-for="note in notesStore.sortedList" :key="note.id"/>
       <PositionedButton/>
+      <IonItem class="ion-margin-horizontal" v-if="notesStore.sortedList.length <= 0">
+        <IonLabel class="ion-text-center">No Notes</IonLabel>
+      </IonItem>
     </IonContent>
   </IonPage>
 </template>
@@ -29,27 +34,26 @@ import {
   IonContent,
   IonHeader,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonSearchbar,
   IonSelect,
   IonSelectOption,
+  IonTitle,
   IonToolbar
 } from "@ionic/vue"
 import {useNotesStore} from "@/stores/notes.js";
 import {supabase} from "@/lib/supabaseClient.js";
-import {onBeforeUpdate, onUpdated, ref} from "vue";
+import {onBeforeUpdate, ref} from "vue";
 import NoteCard from "@/components/NoteCard.vue";
 import PositionedButton from "@/components/PositionedButton.vue";
 
 
+let search = ref("")
+
 let notesStore = useNotesStore()
 
-let sortType = ref("")
-
-let notesList = ref([])
-
-let sortedList = ref([])
 
 const loadNotes = async () => {
 
@@ -57,17 +61,25 @@ const loadNotes = async () => {
       .from('notes')
       .select('*')
 
-  notesList.value = notes.reverse()
+  notesStore.notesList = notes.reverse()
 }
 
 let sortNotes = ($event) => {
-  sortType.value = $event.detail.value
-  sortedList.value = notesList.value.filter(sortedItem => sortedItem.note_type === sortType.value)
+  notesStore.sortType = $event.detail.value
+  notesStore.sortedList = notesStore.notesList.filter(sortedItem => sortedItem.note_type === notesStore.sortType)
+
+  if (notesStore.sortType === "all") {
+    notesStore.sortedList = notesStore.notesList
+  }
 }
 
 onBeforeUpdate(async () => {
   await loadNotes()
-  sortedList.value = notesList.value
+  notesStore.sortedList = notesStore.notesList
 })
+
+let searchByName = () => {
+  notesStore.sortedList = notesStore.notesList.filter(name => name.note_desc.toLowerCase().includes(search.value.toLowerCase()))
+}
 
 </script>

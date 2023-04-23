@@ -7,9 +7,17 @@ export const useNotesStore = defineStore("notes", () => {
 
     let description = ref("")
 
-    let types = ref(["website", "apps", "other"])
+    let types = ref(["website", "app", "other", "all"])
+
+    let sortType = ref("")
+
+    let notesList = ref([])
+
+    let sortedList = ref([])
+
+    let type = ref("")
 
     return {
-        link, description, types
+        link, description, types, sortType, notesList, sortedList, type
     }
 })

@@ -24,6 +24,9 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 
 
+import "./assets/css/main.css"
+
+
 import {createPinia} from "pinia";
 
 const app = createApp(App)
